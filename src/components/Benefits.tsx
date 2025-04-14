@@ -1,5 +1,5 @@
 
-import { Brain, Mail, Lightning, NotebookPen, Sparkles } from "lucide-react";
+import { Brain, Mail, Zap, NotebookPen, Sparkles } from "lucide-react";
 
 const Benefits = () => {
   const benefits = [
@@ -19,7 +19,7 @@ const Benefits = () => {
       description: "Tiny, doable steps to reclaim your authentic self"
     },
     {
-      icon: <Lightning className="h-7 w-7" />,
+      icon: <Zap className="h-7 w-7" />,
       title: "Real Connection",
       description: "A space where you're truly heard, not fixed or analyzed"
     },
