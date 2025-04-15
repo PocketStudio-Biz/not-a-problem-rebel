@@ -1,8 +1,8 @@
-
 import SignupForm from "@/components/SignupForm";
 import Benefits from "@/components/Benefits";
 import { ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -19,7 +19,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 font-nunito relative overflow-hidden">
-      {/* Background decorative elements */}
       <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-amber-200 rounded-full opacity-30 blur-3xl -z-10"></div>
       <div className="absolute bottom-[-100px] left-[-50px] w-96 h-96 bg-pink-200 rounded-full opacity-30 blur-3xl -z-10"></div>
       
@@ -52,18 +51,18 @@ const Index = () => {
           </div>
           
           <div className="order-1 md:order-2 flex flex-col items-center">
-            {/* Profile image placeholder - replace with your actual image */}
-            <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden mb-6 border-4 border-white shadow-xl bg-gradient-to-br from-amber-200 to-pink-200 flex items-center justify-center">
-              <span className="text-center text-gray-600 p-4">
-                Your profile image here
-              </span>
-            </div>
+            <Avatar className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden mb-6 border-4 border-white shadow-xl">
+              <AvatarImage 
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+                alt="Profile Picture" 
+              />
+              <AvatarFallback>AT</AvatarFallback>
+            </Avatar>
             
             <SignupForm />
           </div>
         </div>
 
-        {/* What's Inside Section */}
         <section className="mt-16 md:mt-24">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
             What's Inside
@@ -96,7 +95,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* FAQ Section */}
         <section className="mt-16 md:mt-20">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
             What to Expect
@@ -124,7 +122,6 @@ const Index = () => {
         </section>
       </main>
 
-      {/* Sticky CTA that appears when scrolling */}
       <div 
         className={`fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm py-3 shadow-lg transition-transform duration-300 ${
           hasScrolled ? "translate-y-0" : "translate-y-full"

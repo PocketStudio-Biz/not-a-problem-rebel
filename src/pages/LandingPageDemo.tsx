@@ -15,7 +15,7 @@ const LandingPageDemo = () => {
       type: "button" as const,
     },
     profileImage: {
-      src: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7", // Added placeholder image
+      src: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
       alt: "Profile Picture",
       size: "large" as const,
     },
