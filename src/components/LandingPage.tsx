@@ -1,10 +1,12 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ExternalLink } from "lucide-react";
 import Benefits from "@/components/Benefits";
 import SignupForm from "@/components/SignupForm";
+import ProfileImage from "@/components/ProfileImage";
+import ProfileImageUpload from "@/components/ProfileImageUpload";
 
 // Types for the component props
 interface ProfileImageProps {
@@ -52,6 +54,9 @@ const LandingPage: React.FC<LandingPageProps> = ({
   profileImage,
   hasError = {},
 }) => {
+  // State for the profile image URL
+  const [profileImageUrl, setProfileImageUrl] = useState(profileImage.src || "");
+  
   // Validate required props
   const errors = {
     email: !email || hasError.email,
@@ -88,10 +93,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-warm-gradient font-nunito relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 font-nunito relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-soft-yellow rounded-full opacity-30 blur-3xl -z-10"></div>
-      <div className="absolute bottom-[-100px] left-[-50px] w-96 h-96 bg-soft-pink rounded-full opacity-30 blur-3xl -z-10"></div>
+      <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-amber-200 rounded-full opacity-30 blur-3xl -z-10"></div>
+      <div className="absolute bottom-[-100px] left-[-50px] w-96 h-96 bg-pink-200 rounded-full opacity-30 blur-3xl -z-10"></div>
       
       <main className="container max-w-5xl px-4 py-8 md:py-16">
         <header className="text-center mb-12 md:mb-16">
@@ -145,17 +150,14 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
           
           <div className="order-1 md:order-2 flex flex-col items-center">
-            {/* Profile image with Avatar from shadcn/ui */}
+            {/* Profile image uploader */}
             <div className="mb-6">
-              <Avatar className={`rounded-full overflow-hidden border-4 border-white shadow-xl ${profileImageClasses[profileImage.size]}`}>
-                {profileImage.src ? (
-                  <AvatarImage src={profileImage.src} alt={profileImage.alt} />
-                ) : (
-                  <AvatarFallback className="bg-soft-green text-gray-600 text-2xl">
-                    {getInitials(name || "Profile")}
-                  </AvatarFallback>
-                )}
-              </Avatar>
+              <ProfileImageUpload
+                initialImageUrl={profileImageUrl}
+                alt={profileImage.alt}
+                size={profileImage.size}
+                onImageChange={setProfileImageUrl}
+              />
             </div>
             
             {/* Displaying the user's info in the form */}
@@ -164,7 +166,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <label className="block text-sm font-medium">Name</label>
-                    <p className={`p-2 rounded-xl border ${errors.name ? 'border-red-500 bg-red-50' : 'border-soft-gray'}`}>
+                    <p className={`p-2 rounded-xl border ${errors.name ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}>
                       {name || <span className="text-red-500">Please enter your name</span>}
                     </p>
                     {errors.name && <p className="text-sm text-red-500">Name is required</p>}
@@ -172,14 +174,14 @@ const LandingPage: React.FC<LandingPageProps> = ({
                   
                   <div className="space-y-2">
                     <label className="block text-sm font-medium">Email</label>
-                    <p className={`p-2 rounded-xl border ${errors.email ? 'border-red-500 bg-red-50' : 'border-soft-gray'}`}>
+                    <p className={`p-2 rounded-xl border ${errors.email ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}>
                       {email || <span className="text-red-500">Please enter your email</span>}
                     </p>
                     {errors.email && <p className="text-sm text-red-500">Email is required</p>}
                   </div>
                   
                   <Button 
-                    className="w-full bg-warm-gradient hover:bg-warm-gradient-hover text-black font-bold h-12 text-lg rounded-xl transition-all duration-300 hover:shadow-lg"
+                    className="w-full bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold h-12 text-lg rounded-xl transition-all duration-300 hover:shadow-lg"
                   >
                     Join the Challenge →
                   </Button>
@@ -193,7 +195,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
 
-        {/* FAQ Section */}
+        {/* What's Inside Section */}
         <section className="mt-16 md:mt-24">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
             What to Expect
@@ -232,7 +234,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               asChild
-              className="bg-warm-gradient hover:bg-warm-gradient-hover text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg"
+              className="bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg"
             >
               <a 
                 href={calendlyLink.url} 

@@ -1,9 +1,14 @@
+
 import SignupForm from "@/components/SignupForm";
 import Benefits from "@/components/Benefits";
 import { ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
+import ProfileImageUpload from "@/components/ProfileImageUpload";
+
 const Index = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+  
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -12,6 +17,7 @@ const Index = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  
   return <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 font-nunito relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-amber-200 rounded-full opacity-30 blur-3xl -z-10"></div>
@@ -46,11 +52,14 @@ const Index = () => {
           </div>
           
           <div className="order-1 md:order-2 flex flex-col items-center">
-            {/* Profile image placeholder - replace with your actual image */}
-            <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden mb-6 border-4 border-white shadow-xl bg-gradient-to-br from-amber-200 to-pink-200 flex items-center justify-center">
-              <span className="text-center text-gray-600 p-4">
-                Your profile image here
-              </span>
+            {/* Profile image with uploader */}
+            <div className="mb-6">
+              <ProfileImageUpload
+                initialImageUrl={profileImageUrl}
+                alt="Your profile image"
+                size="large"
+                onImageChange={setProfileImageUrl}
+              />
             </div>
             
             <SignupForm />
@@ -143,8 +152,8 @@ const Index = () => {
             
             <div className="flex items-center gap-4">
               <a href="https://calendly.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-gray-700 hover:text-black transition-colors">
-                
-                
+                <span>Book a Session</span>
+                <ExternalLink className="h-4 w-4" />
               </a>
             </div>
           </div>
@@ -152,4 +161,5 @@ const Index = () => {
       </footer>
     </div>;
 };
+
 export default Index;
