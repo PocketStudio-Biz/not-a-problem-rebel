@@ -1,6 +1,8 @@
 
 import React, { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const MailerLiteForm = () => {
   const [name, setName] = useState("");
@@ -11,27 +13,64 @@ const MailerLiteForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address to join the challenge.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
-      // This is where you'd connect to MailerLite API
-      // For demonstration, we'll simulate the submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // For security reasons, API calls to MailerLite should be done through a backend
+      // This is a frontend implementation that works with MailerLite's API
+      const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          // IMPORTANT: In a production environment, this API key should be stored securely on the backend
+          // Replace 'YOUR_MAILERLITE_API_KEY' with your actual API key when testing
+          "Authorization": `Bearer YOUR_MAILERLITE_API_KEY`, 
+        },
+        body: JSON.stringify({
+          email: email,
+          fields: {
+            name: name
+          },
+          groups: ["YOUR_GROUP_ID"], // Replace with your MailerLite group ID
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to subscribe");
+      }
       
       setIsSuccess(true);
       toast({
-        title: "Thank you!",
-        description: "You have successfully joined our subscriber list.",
+        title: "Welcome to the challenge!",
+        description: "Check your inbox for your first unmasking action.",
         duration: 5000,
       });
+      
+      // Clear form
+      setName("");
+      setEmail("");
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast({
         title: "Something went wrong",
-        description: "Please try again later.",
+        description: error instanceof Error ? error.message : "Please try again later.",
         variant: "destructive",
         duration: 5000,
       });
-      console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -40,77 +79,76 @@ const MailerLiteForm = () => {
   return (
     <div className="w-full max-w-md mx-auto">
       {!isSuccess ? (
-        <div className="ml-form-embedWrapper bg-[#f6f6f6] rounded-lg p-5">
-          {/* Header image */}
-          <div className="ml-form-embedHeader mb-4">
-            <img 
-              src="https://storage.mlcdn.com/account_image/1451376/V7AB2KaSp8nq3FFSoszXnOdcHBlS5AFuC5MyNjde.png" 
-              alt="Header" 
-              className="w-full"
-            />
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+          <div className="mb-6 text-center">
+            <h3 className="text-2xl font-bold mb-3">Join the 5-Day Challenge</h3>
+            <p className="text-gray-700">
+              No fixing. No performative wellness. Just realness in your inbox.
+            </p>
           </div>
           
-          {/* Form content */}
-          <div className="ml-form-embedBody">
-            <div className="ml-form-embedContent mb-6">
-              <h4 className="text-2xl font-semibold text-black mb-4">Start the 5-Day Unmasking Challenge</h4>
-              <p className="font-bold text-black">
-                Sign up to get a daily email for 5 days to help you unmask, reconnect, and feel like yourself again.
-              </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Input
+                type="text"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-white border-soft-gray"
+              />
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="ml-form-fieldRow">
-                <input
-                  type="email"
-                  aria-label="email"
-                  aria-required="true"
-                  className="w-full px-3 py-2 border border-[#cccccc] rounded-md bg-white text-[#333333]"
-                  name="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="ml-form-fieldRow">
-                <input
-                  type="text"
-                  aria-label="name"
-                  className="w-full px-3 py-2 border border-[#cccccc] rounded-md bg-white text-[#333333]"
-                  name="name"
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              
-              <div className="ml-form-embedSubmit">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-black hover:bg-[#333333] text-white font-bold py-2 px-4 rounded-md transition-colors"
-                >
-                  {isSubmitting ? (
-                    <div className="flex justify-center items-center">
-                      <div className="animate-spin mr-2 h-5 w-5 border-4 border-white border-t-transparent rounded-full"></div>
-                      <span>Loading...</span>
-                    </div>
-                  ) : (
-                    "Start the Challenge"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div>
+              <Input
+                type="email"
+                placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-xl bg-white border-soft-gray"
+              />
+            </div>
+            
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold py-3 px-4 rounded-xl transition-all duration-300 h-auto text-lg"
+            >
+              {isSubmitting ? (
+                <div className="flex justify-center items-center">
+                  <div className="animate-spin mr-2 h-5 w-5 border-4 border-black border-t-transparent rounded-full"></div>
+                  <span>Joining...</span>
+                </div>
+              ) : (
+                "Start Unmasking →"
+              )}
+            </Button>
+            
+            <p className="text-center text-sm text-gray-500 italic">
+              5 days of voice memos, journal prompts & tiny actions
+            </p>
+          </form>
         </div>
       ) : (
-        <div className="ml-form-successBody bg-[#f6f6f6] rounded-lg p-5 text-center">
-          <div className="ml-form-successContent">
-            <h4 className="text-2xl font-semibold text-black mb-4">Thank you!</h4>
-            <p className="text-black">You have successfully joined our subscriber list.</p>
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg text-center">
+          <div className="mb-4">
+            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
           </div>
+          <h3 className="text-2xl font-bold mb-2">You're in!</h3>
+          <p className="text-gray-700 mb-4">
+            Check your inbox for your first unmasking action. Can't wait to connect with you!
+          </p>
+          <Button 
+            onClick={() => setIsSuccess(false)}
+            variant="outline"
+            className="text-black border-black hover:bg-gray-100"
+          >
+            Back to form
+          </Button>
         </div>
       )}
     </div>
