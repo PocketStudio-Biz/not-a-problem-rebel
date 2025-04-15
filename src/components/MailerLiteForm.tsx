@@ -1,50 +1,37 @@
+
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
-import { subscribeToMailerLite } from "@/services/mailerLiteService";
 
 const MailerLiteForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(null);
 
     try {
-      const result = await subscribeToMailerLite(email, name);
+      // This is where you'd connect to MailerLite API
+      // For demonstration, we'll simulate the submission
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (result.success) {
-        setIsSuccess(true);
-        toast({
-          title: "Thank you!",
-          description: "You have successfully joined our subscriber list.",
-          duration: 5000,
-        });
-      } else {
-        setError(result.message);
-        toast({
-          title: "Subscription failed",
-          description: result.message || "Please try again later.",
-          variant: "destructive",
-          duration: 5000,
-        });
-      }
+      setIsSuccess(true);
+      toast({
+        title: "Thank you!",
+        description: "You have successfully joined our subscriber list.",
+        duration: 5000,
+      });
     } catch (error) {
-      console.error("Error submitting form:", error);
-      setError(typeof error === "string" ? error : (error as Error).message || "An unexpected error occurred");
       toast({
         title: "Something went wrong",
         description: "Please try again later.",
         variant: "destructive",
         duration: 5000,
       });
+      console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -71,13 +58,6 @@ const MailerLiteForm = () => {
                 Sign up to get a daily email for 5 days to help you unmask, reconnect, and feel like yourself again.
               </p>
             </div>
-            
-            {error && (
-              <Alert variant="destructive" className="mb-4">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="ml-form-fieldRow">
