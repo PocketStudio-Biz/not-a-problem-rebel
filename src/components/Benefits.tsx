@@ -35,15 +35,15 @@ const Benefits = () => {
       {benefits.map((benefit, index) => (
         <div 
           key={index}
-          className="flex flex-col items-start gap-3 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in hover:scale-105"
+          className="flex flex-col items-start gap-3 p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in"
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="mb-2 p-3 rounded-full bg-purple-100">
             {benefit.icon}
           </div>
           <div>
-            <h3 className="font-bold text-lg mb-1 text-gray-800">{benefit.title}</h3>
-            <p className="text-gray-700">{benefit.description}</p>
+            <h3 className="font-bold text-lg mb-1">{benefit.title}</h3>
+            <p className="text-gray-600">{benefit.description}</p>
           </div>
         </div>
       ))}

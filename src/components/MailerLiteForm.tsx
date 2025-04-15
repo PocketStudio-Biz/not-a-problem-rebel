@@ -27,15 +27,15 @@ const MailerLiteForm = () => {
     setIsSubmitting(true);
 
     try {
-      // For demo purposes, we'll simulate a successful API call
-      // In production, you would uncomment the actual API call to MailerLite
-      
-      /* 
+      // For security reasons, API calls to MailerLite should be done through a backend
+      // This is a frontend implementation that works with MailerLite's API
       const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          // IMPORTANT: In a production environment, this API key should be stored securely on the backend
+          // Replace 'YOUR_MAILERLITE_API_KEY' with your actual API key when testing
           "Authorization": `Bearer YOUR_MAILERLITE_API_KEY`, 
         },
         body: JSON.stringify({
@@ -43,7 +43,7 @@ const MailerLiteForm = () => {
           fields: {
             name: name
           },
-          groups: ["YOUR_GROUP_ID"],
+          groups: ["YOUR_GROUP_ID"], // Replace with your MailerLite group ID
         }),
       });
 
@@ -52,10 +52,6 @@ const MailerLiteForm = () => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to subscribe");
       }
-      */
-      
-      // This is for demo purposes - remove in production
-      await new Promise(resolve => setTimeout(resolve, 1500));
       
       setIsSuccess(true);
       toast({
@@ -98,7 +94,7 @@ const MailerLiteForm = () => {
                 placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white border-soft-gray focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-white border-soft-gray"
               />
             </div>
             
@@ -109,7 +105,7 @@ const MailerLiteForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white border-soft-gray focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-white border-soft-gray"
               />
             </div>
             
@@ -134,7 +130,7 @@ const MailerLiteForm = () => {
           </form>
         </div>
       ) : (
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg text-center animate-fade-in">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg text-center">
           <div className="mb-4">
             <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-500" viewBox="0 0 20 20" fill="currentColor">
