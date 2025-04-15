@@ -3,7 +3,6 @@ import React from "react";
 import LandingPage from "@/components/LandingPage";
 
 const LandingPageDemo = () => {
-  // Demo props for the LandingPage component
   const demoProps = {
     name: "Alex Taylor",
     email: "alex@example.com",
@@ -16,22 +15,10 @@ const LandingPageDemo = () => {
       type: "button" as const,
     },
     profileImage: {
-      src: "", // Leave empty to test fallback
-      alt: "Alex Taylor",
+      src: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7", // Added placeholder image
+      alt: "Profile Picture",
       size: "large" as const,
     },
-    // Uncomment to test error states
-    // hasError: {
-    //   email: true,
-    //   name: false,
-    //   calendlyLink: {
-    //     url: true,
-    //     label: false,
-    //   },
-    //   calendlySessionButton: {
-    //     type: false,
-    //   },
-    // },
   };
 
   return <LandingPage {...demoProps} />;
