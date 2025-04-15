@@ -1,24 +1,18 @@
-
 import SignupForm from "@/components/SignupForm";
 import Benefits from "@/components/Benefits";
 import { ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
-
 const Index = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
       setHasScrolled(offset > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 font-nunito relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 font-nunito relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-amber-200 rounded-full opacity-30 blur-3xl -z-10"></div>
       <div className="absolute bottom-[-100px] left-[-50px] w-96 h-96 bg-pink-200 rounded-full opacity-30 blur-3xl -z-10"></div>
@@ -125,21 +119,16 @@ const Index = () => {
       </main>
 
       {/* Sticky CTA that appears when scrolling */}
-      <div 
-        className={`fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm py-3 shadow-lg transition-transform duration-300 ${
-          hasScrolled ? "translate-y-0" : "translate-y-full"
-        }`}
-      >
+      <div className={`fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm py-3 shadow-lg transition-transform duration-300 ${hasScrolled ? "translate-y-0" : "translate-y-full"}`}>
         <div className="container max-w-5xl px-4 flex items-center justify-between">
           <p className="font-bold text-sm md:text-base">Ready to unmask?</p>
-          <a 
-            href="#top" 
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold px-4 py-2 rounded-lg text-sm md:text-base transition-all"
-          >
+          <a href="#top" onClick={e => {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+        }} className="bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold px-4 py-2 rounded-lg text-sm md:text-base transition-all">
             Join the Challenge →
           </a>
         </div>
@@ -153,21 +142,14 @@ const Index = () => {
             </p>
             
             <div className="flex items-center gap-4">
-              <a 
-                href="https://calendly.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-gray-700 hover:text-black transition-colors"
-              >
-                <span>Book a Call</span>
-                <ExternalLink className="h-4 w-4" />
+              <a href="https://calendly.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-gray-700 hover:text-black transition-colors">
+                
+                
               </a>
             </div>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
