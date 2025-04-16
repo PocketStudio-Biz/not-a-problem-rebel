@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -8,6 +7,8 @@ export default {
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
+		"./index.html",
+		"./src/**/*.{js,ts,jsx,tsx}",
 	],
 	prefix: "",
 	theme: {
@@ -75,6 +76,13 @@ export default {
 					pink: '#FFDEE2',
 					blue: '#D3E4FD',
 					gray: '#F1F0FB'
+				},
+				'soft-peach': '#FFB5A7',
+				'warm-purple': '#9F7AEA',
+				'soft-gray': '#E2E8F0',
+				'warm-gradient': {
+					DEFAULT: '#FFF5F2',
+					hover: '#FFF0ED'
 				}
 			},
 			borderRadius: {
@@ -114,6 +122,13 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out'
+			},
+			backgroundImage: {
+				'warm-gradient': 'linear-gradient(135deg, #FFF5F2 0%, #FDF2FF 100%)',
+				'warm-gradient-hover': 'linear-gradient(135deg, #FFE8E3 0%, #F9E5FF 100%)',
+			},
+			boxShadow: {
+				'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05)',
 			}
 		}
 	},
