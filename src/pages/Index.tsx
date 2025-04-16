@@ -4,4 +4,8 @@ const Index = () => {
   return <LandingPage />;
 };
 
+<<<<<<< HEAD
 export default Index;
+=======
+export default Index;
+>>>>>>> feature/celebrations
