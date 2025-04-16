@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ProfileImage from "./ProfileImage";
 import ImageUpload from "./ImageUpload";
-import { toast } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProfileImageUploadProps {
   initialImageUrl?: string;
@@ -19,6 +19,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   onImageChange,
 }) => {
   const [imageUrl, setImageUrl] = useState(initialImageUrl || "");
+  const { toast } = useToast();
   
   const handleUploadComplete = (url: string) => {
     setImageUrl(url);

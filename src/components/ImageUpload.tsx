@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 interface ImageUploadProps {
@@ -15,6 +15,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   bucketName = "images",
 }) => {
   const [isUploading, setIsUploading] = useState(false);
+  const { toast } = useToast();
   
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
