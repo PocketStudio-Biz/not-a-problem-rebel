@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import confetti from 'canvas-confetti';
 import { DancingToast } from "@/components/ui/dancing-toast";
+import { toast } from "sonner";
 
 // Inclusive celebration color palettes
 const colors = {
@@ -161,136 +161,82 @@ const MailerLiteForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submission started", { name, email });
-    
-    if (!email) {
-      toast({
-        title: "Your email is needed",
-        description: "We'd love to send you the challenge materials - pop in your email when you're ready.",
-        variant: "destructive",
-        duration: 3000,
-      });
+    if (!email || !name) {
+      toast("Both name and email are required to join the challenge.");
       return;
     }
-    
+
     setIsSubmitting(true);
 
     try {
-      console.log("Calling Supabase Edge Function...");
-      const { data, error } = await supabase.functions.invoke('mailerlite', {
-        body: { email, name },
+      const response = await fetch("/api/mailerlite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, name }),
       });
-      console.log("Edge Function response:", { data, error });
 
-      if (error) {
-        throw new Error(error.message);
+      if (!response.ok) {
+        throw new Error("Failed to subscribe");
       }
 
-      // Check if we got a response with a message
-      if (data?.message) {
-        // If it wasn't successful, show the error message
-        if (!data.success) {
-          toast({
-            title: "A gentle heads up",
-            description: data.message,
-            variant: "destructive",
-            duration: 5000,
-          });
-          return;
-        }
-        
-        // Show the dancing success toast and celebrate!
-        setShowSuccessToast(true);
-        celebrate();
-        
-        // Clear form after a slight delay
-        setTimeout(() => {
-          setName("");
-          setEmail("");
-        }, 500);
-
-        // Keep the toast visible for longer
-        setTimeout(() => {
-          setShowSuccessToast(false);
-        }, 6000); // Show toast for 6 seconds
-
-        return;
-      }
-
-      throw new Error("Something unexpected happened. Please try again.");
-      
+      toast("Welcome to the challenge! Check your email for next steps. 🎉");
+      setName("");
+      setEmail("");
     } catch (error) {
-      console.error("Error submitting form:", error);
-      toast({
-        title: "A gentle heads up",
-        description: error instanceof Error 
-          ? error.message 
-          : "Something's not quite flowing right. Want to try that again?",
-        variant: "destructive",
-        duration: 5000,
-      });
+      toast("Something went wrong. Please try again. If the problem persists, reach out for support.");
+      console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <>
-      <div className="bg-gradient-to-br from-white to-amber-50 rounded-xl p-8 shadow-sm border border-amber-100">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold mb-3 text-gray-800">Join the 5-Day Challenge</h3>
-          <p className="text-gray-600">
-            No fixing. No performative wellness. Just realness in your inbox.
-          </p>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-5" id="signup-form">
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border-pink-100 bg-white/80 focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
-              id="name"
-              name="name"
-            />
-          </div>
-          
-          <div className="relative">
-            <Input
-              type="email"
-              placeholder="Your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-lg border-pink-100 bg-white/80 focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
-              id="email"
-              name="email"
-            />
-          </div>
-          
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-amber-200 to-pink-300 text-gray-800 font-bold py-4 px-6 rounded-full hover:opacity-90 transition-opacity h-auto text-lg shadow-sm hover:shadow"
-          >
-            {isSubmitting ? "Sending..." : "Start Unmasking →"}
-          </Button>
-        </form>
-
-        <p className="text-center text-sm text-gray-500 mt-6 italic">
-          5 days of voice memos, journal prompts & tiny actions
+    <div className="bg-white rounded-xl p-8 shadow-sm">
+      <div className="text-center mb-6">
+        <h3 className="text-2xl font-bold mb-2">Join the 5-Day Challenge</h3>
+        <p className="text-gray-600">
+          No fixing. No performative wellness. Just realness in your inbox.
         </p>
       </div>
 
-      <DancingToast
-        open={showSuccessToast}
-        onOpenChange={setShowSuccessToast}
-        title="Welcome, fellow rebel! 💌"
-        description="Your first unmasking invitation is on its way. Take all the time and space you need."
-      />
-    </>
+      <form onSubmit={handleSubmit} className="space-y-5" id="signup-form">
+        <div className="relative">
+          <Input
+            type="text"
+            placeholder="Your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-yellow-200"
+            required
+          />
+        </div>
+
+        <div className="relative">
+          <Input
+            type="email"
+            placeholder="Your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-yellow-200"
+            required
+          />
+        </div>
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-gradient-to-r from-yellow-200 to-pink-300 text-gray-900 font-bold py-3 rounded-xl transition-all duration-300 hover:opacity-90 disabled:opacity-50"
+        >
+          {isSubmitting ? "Joining..." : "Join Now →"}
+        </Button>
+
+        <p className="text-center text-sm text-gray-500">
+          No pressure. Unsubscribe anytime.
+        </p>
+      </form>
+    </div>
   );
 };
 

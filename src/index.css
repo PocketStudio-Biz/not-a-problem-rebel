@@ -1,10 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> aa451a8 (Backup - Added celebrations)
 @layer base {
   :root {
     --background: 0 0% 100%;

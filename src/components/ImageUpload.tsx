@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,6 +121,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
 export default ImageUpload;
 =======
+=======
+>>>>>>> aa451a8 (Backup - Added celebrations)
 import React, { useState, useCallback, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { uploadImage } from '@/lib/upload-image'
@@ -259,5 +262,9 @@ export function ImageUpload({ onUploadComplete, className = '' }: ImageUploadPro
       )}
     </div>
   )
+<<<<<<< HEAD
+} 
+>>>>>>> aa451a8 (Backup - Added celebrations)
+=======
 } 
 >>>>>>> aa451a8 (Backup - Added celebrations)
