@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import confetti from 'canvas-confetti';
 import { DancingToast } from "@/components/ui/dancing-toast";
-import { toast } from "sonner";
 
 // Inclusive celebration color palettes
 const colors = {
@@ -162,7 +161,11 @@ const MailerLiteForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !name) {
-      toast("Both name and email are required to join the challenge.");
+      toast({
+        title: "Required Fields",
+        description: "Both name and email are required to join the challenge.",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -181,11 +184,20 @@ const MailerLiteForm = () => {
         throw new Error("Failed to subscribe");
       }
 
-      toast("Welcome to the challenge! Check your email for next steps. 🎉");
+      toast({
+        title: "Welcome to the challenge! 🎉",
+        description: "Check your email for next steps.",
+        variant: "default"
+      });
       setName("");
       setEmail("");
+      celebrate();
     } catch (error) {
-      toast("Something went wrong. Please try again. If the problem persists, reach out for support.");
+      toast({
+        title: "Something went wrong",
+        description: "Please try again. If the problem persists, reach out for support.",
+        variant: "destructive"
+      });
       console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
