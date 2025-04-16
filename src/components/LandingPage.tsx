@@ -1,50 +1,9 @@
-<<<<<<< HEAD
-
-import React, { useState } from "react";
-=======
 import React, { useRef, useCallback, useState } from "react";
->>>>>>> aa451a8 (Backup - Added celebrations)
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-<<<<<<< HEAD
-import Benefits from "@/components/Benefits";
-import SignupForm from "@/components/SignupForm";
-import ProfileImage from "@/components/ProfileImage";
-import ProfileImageUpload from "@/components/ProfileImageUpload";
-
-// Types for the component props
-interface ProfileImageProps {
-  src: string;
-  alt: string;
-  size: "large" | "small";
-}
-
-interface CalendlyLinkProps {
-  url: string;
-  label: string;
-  type: "button";
-}
-
-interface CalendlySessionButtonProps {
-  type: "button";
-}
-
-interface ErrorProps {
-  email?: boolean;
-  name?: boolean;
-  calendlyLink?: {
-    url?: boolean;
-    label?: boolean;
-  };
-  calendlySessionButton?: {
-    type?: boolean;
-  };
-}
-=======
 import MailerLiteForm from "@/components/MailerLiteForm";
 import confetti from 'canvas-confetti';
 import { motion, useScroll, useSpring } from "framer-motion";
->>>>>>> aa451a8 (Backup - Added celebrations)
 
 interface LandingPageProps {
   calendlyUrl?: string;
@@ -53,22 +12,6 @@ interface LandingPageProps {
 const LandingPage: React.FC<LandingPageProps> = ({
   calendlyUrl = "https://calendly.com/mykey-pocket/connection-call"
 }) => {
-<<<<<<< HEAD
-  // State for the profile image URL
-  const [profileImageUrl, setProfileImageUrl] = useState(profileImage.src || "");
-  
-  // Validate required props
-  const errors = {
-    email: !email || hasError.email,
-    name: !name || hasError.name,
-    calendlyLink: {
-      url: !calendlyLink.url || (hasError.calendlyLink?.url ?? false),
-      label: !calendlyLink.label || (hasError.calendlyLink?.label ?? false),
-    },
-    calendlySessionButton: {
-      type: calendlySessionButton.type !== "button" || (hasError.calendlySessionButton?.type ?? false),
-    },
-=======
   const formRef = useRef<HTMLDivElement>(null);
   const lastConfettiTime = useRef(0);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -84,11 +27,63 @@ const LandingPage: React.FC<LandingPageProps> = ({
   // Inclusive celebration color palettes
   const colors = {
     pride: ['#FF0018', '#FFA52C', '#FFFF41', '#008018', '#0000F9', '#86007D'],
-    trans: ['#55CDFC', '#F7A8B8', '#FFFFFF', '#F7A8B8', '#55CDFC'],
-    bipoc: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#D4A5A5'],
+    trans: ['#55CDFC', '#F7A8B8', '#FFFFFF'],
+    bipoc: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD'],
     brand: ['#FEF9C3', '#FDE68A', '#FCD34D', '#FBBF24', '#FBA4B4', '#FDA4AF']
->>>>>>> aa451a8 (Backup - Added celebrations)
   };
+
+  const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const now = Date.now()
+    if (now - lastConfettiTime.current < 1700) return
+    
+    lastConfettiTime.current = now
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = (rect.left + rect.width / 2) / window.innerWidth
+    const y = (rect.top + rect.height / 2) / window.innerHeight
+
+    // Pride flag celebration
+    confetti({
+      particleCount: 60,
+      spread: 100,
+      origin: { x, y },
+      colors: colors.pride,
+      ticks: 200,
+      gravity: 0.4,
+      scalar: 1.2,
+      shapes: ['star', 'circle'],
+      drift: 1
+    });
+
+    // Trans flag celebration
+    setTimeout(() => {
+      confetti({
+        particleCount: 40,
+        spread: 80,
+        origin: { x: x - 0.1, y },
+        colors: colors.trans,
+        ticks: 180,
+        gravity: 0.3,
+        scalar: 1.1,
+        shapes: ['circle'],
+        drift: 0.5
+      });
+    }, 100);
+
+    // BIPOC celebration
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        spread: 120,
+        origin: { x: x + 0.1, y },
+        colors: colors.bipoc,
+        ticks: 220,
+        gravity: 0.2,
+        scalar: 1.3,
+        shapes: ['star'],
+        drift: 1.5
+      });
+    }, 200);
+  }, [])
 
   const scrollToForm = () => {
     if (!formRef.current) return;
@@ -146,73 +141,13 @@ const LandingPage: React.FC<LandingPageProps> = ({
     requestAnimationFrame(animate);
   };
 
-  const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const now = Date.now()
-    if (now - lastConfettiTime.current < 1700) return
-    
-    lastConfettiTime.current = now
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = (rect.left + rect.width / 2) / window.innerWidth
-    const y = (rect.top + rect.height / 2) / window.innerHeight
-
-    // Pride flag celebration
-    confetti({
-      particleCount: 60,
-      spread: 100,
-      origin: { x, y },
-      colors: colors.pride,
-      ticks: 200,
-      gravity: 0.4,
-      scalar: 1.2,
-      shapes: ['star', 'circle'],
-      drift: 1
-    });
-
-    // Trans flag celebration
-    setTimeout(() => {
-      confetti({
-        particleCount: 40,
-        spread: 80,
-        origin: { x: x - 0.1, y },
-        colors: colors.trans,
-        ticks: 180,
-        gravity: 0.3,
-        scalar: 1.1,
-        shapes: ['circle'],
-        drift: 0.5
-      });
-    }, 100);
-
-    // BIPOC celebration
-    setTimeout(() => {
-      confetti({
-        particleCount: 50,
-        spread: 120,
-        origin: { x: x + 0.1, y },
-        colors: colors.bipoc,
-        ticks: 220,
-        gravity: 0.2,
-        scalar: 1.3,
-        shapes: ['star'],
-        drift: 1.5
-      });
-    }, 200);
-  }, [])
-
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 font-nunito relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-amber-200 rounded-full opacity-30 blur-3xl -z-10"></div>
-      <div className="absolute bottom-[-100px] left-[-50px] w-96 h-96 bg-pink-200 rounded-full opacity-30 blur-3xl -z-10"></div>
-=======
     <div className="min-h-screen bg-[#FFF5F5] font-nunito px-4 py-12 md:py-16 relative">
       {/* Smooth scroll progress indicator */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-200 to-pink-300 origin-left z-50"
         style={{ scaleX }}
       />
->>>>>>> aa451a8 (Backup - Added celebrations)
       
       {/* Floating scroll indicators */}
       {isScrolling && (
@@ -275,50 +210,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
               Authentic, unfiltered conversation from one ND human to another
             </p>
           </div>
-<<<<<<< HEAD
-          
-          <div className="order-1 md:order-2 flex flex-col items-center">
-            {/* Profile image uploader */}
-            <div className="mb-6">
-              <ProfileImageUpload
-                initialImageUrl={profileImageUrl}
-                alt={profileImage.alt}
-                size={profileImage.size}
-                onImageChange={setProfileImageUrl}
-              />
-            </div>
-            
-            {/* Displaying the user's info in the form */}
-            <div className="w-full max-w-md mx-auto">
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 md:p-6 shadow-lg">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Name</label>
-                    <p className={`p-2 rounded-xl border ${errors.name ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}>
-                      {name || <span className="text-red-500">Please enter your name</span>}
-                    </p>
-                    {errors.name && <p className="text-sm text-red-500">Name is required</p>}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Email</label>
-                    <p className={`p-2 rounded-xl border ${errors.email ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}>
-                      {email || <span className="text-red-500">Please enter your email</span>}
-                    </p>
-                    {errors.email && <p className="text-sm text-red-500">Email is required</p>}
-                  </div>
-                  
-                  <Button 
-                    className="w-full bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold h-12 text-lg rounded-xl transition-all duration-300 hover:shadow-lg"
-                  >
-                    Join the Challenge →
-                  </Button>
-                  
-                  <p className="text-center text-sm text-gray-500">
-                    No fixing. No performing. Just realness in your inbox.
-                  </p>
-                </div>
-=======
 
           <div className="bg-white rounded-xl p-6 shadow-sm" role="listitem">
             <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4" aria-hidden="true">
@@ -357,27 +248,12 @@ const LandingPage: React.FC<LandingPageProps> = ({
                   alt="I'm Not a Problem to Solve sweatshirt" 
                   className="w-full h-full object-cover"
                 />
->>>>>>> aa451a8 (Backup - Added celebrations)
               </div>
             </div>
           </div>
         </div>
 
         {/* What's Inside Section */}
-<<<<<<< HEAD
-        <section className="mt-16 md:mt-24">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
-            What to Expect
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/80 backdrop-blur-sm p-5 rounded-xl shadow-sm">
-              <h3 className="font-bold text-xl mb-2">Who is this for?</h3>
-              <p className="text-gray-700">
-                Neurodivergent souls who are tired of being told they're a problem to fix. 
-                People who want to shed their masks and live authentically. Anyone seeking 
-                connection without performative wellness culture.
-=======
         <section className="mb-24" aria-labelledby="whats-inside-heading">
           <h2 id="whats-inside-heading" className="text-3xl font-bold text-center mb-12">What's Inside</h2>
           <div className="grid md:grid-cols-3 gap-8" role="list">
@@ -389,7 +265,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
               <p className="text-gray-800">
                 Raw, unfiltered, and real conversations about unmasking and 
                 embracing your neurodivergence.
->>>>>>> aa451a8 (Backup - Added celebrations)
               </p>
             </div>
 
@@ -417,36 +292,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </section>
 
-<<<<<<< HEAD
-        {/* Call-to-action with Calendly */}
-        <section className="mt-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            Ready for deeper support?
-          </h2>
-          <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
-            After the 5-day challenge, you'll have the option to book a 1:1 session.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              asChild
-              className="bg-gradient-to-r from-amber-300 to-pink-300 hover:from-amber-400 hover:to-pink-400 text-black font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg"
-            >
-              <a 
-                href={calendlyLink.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={`flex items-center gap-2 ${errors.calendlyLink.url ? 'cursor-not-allowed opacity-60' : ''}`}
-              >
-                <span>{calendlyLink.label || "Book a Call"}</span>
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </Button>
-            
-            {(errors.calendlyLink.url || errors.calendlyLink.label) && (
-              <p className="text-sm text-red-500">Valid Calendly link information is required</p>
-            )}
-=======
         {/* Additional Features Section */}
         <section className="mb-24" aria-label="Additional features">
           <div className="grid md:grid-cols-2 gap-8" role="list">
@@ -469,7 +314,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 A gentle invitation to go deeper on Day 5 (no pressure)
               </p>
             </div>
->>>>>>> aa451a8 (Backup - Added celebrations)
           </div>
         </section>
 
