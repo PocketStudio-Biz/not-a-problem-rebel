@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -235,46 +236,50 @@ const MailerLiteForm = () => {
 
   return (
     <>
-      <div className="bg-white rounded-xl p-8 shadow-sm">
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold mb-2">Join the 5-Day Challenge</h3>
+      <div className="bg-gradient-to-br from-white to-amber-50 rounded-xl p-8 shadow-sm border border-amber-100">
+        <div className="text-center mb-8">
+          <h3 className="text-2xl font-bold mb-3 text-gray-800">Join the 5-Day Challenge</h3>
           <p className="text-gray-600">
             No fixing. No performative wellness. Just realness in your inbox.
           </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-4" id="signup-form">
-          <Input
-            type="text"
-            placeholder="Your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border-gray-200 bg-gray-50/50"
-            id="name"
-            name="name"
-          />
+        <form onSubmit={handleSubmit} className="space-y-5" id="signup-form">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border-pink-100 bg-white/80 focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
+              id="name"
+              name="name"
+            />
+          </div>
           
-          <Input
-            type="email"
-            placeholder="Your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-3 rounded-lg border-gray-200 bg-gray-50/50"
-            id="email"
-            name="email"
-          />
+          <div className="relative">
+            <Input
+              type="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-lg border-pink-100 bg-white/80 focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
+              id="email"
+              name="email"
+            />
+          </div>
           
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-yellow-200 to-pink-300 text-gray-800 font-bold py-3 rounded-full hover:opacity-90 transition-opacity h-auto"
+            className="w-full bg-gradient-to-r from-amber-200 to-pink-300 text-gray-800 font-bold py-4 px-6 rounded-full hover:opacity-90 transition-opacity h-auto text-lg shadow-sm hover:shadow"
           >
             {isSubmitting ? "Sending..." : "Start Unmasking →"}
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-4 italic">
+        <p className="text-center text-sm text-gray-500 mt-6 italic">
           5 days of voice memos, journal prompts & tiny actions
         </p>
       </div>
