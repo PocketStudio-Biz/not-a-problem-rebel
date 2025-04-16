@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import SignupForm from "@/components/SignupForm";
 import Benefits from "@/components/Benefits";
@@ -163,3 +164,12 @@ const Index = () => {
 };
 
 export default Index;
+=======
+import LandingPage from "@/components/LandingPage";
+
+const Index = () => {
+  return <LandingPage />;
+};
+
+export default Index;
+>>>>>>> aa451a8 (Backup - Added celebrations)
