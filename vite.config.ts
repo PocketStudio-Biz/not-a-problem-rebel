@@ -20,7 +20,7 @@ export default defineConfig(async ({ mode }) => {
   const devPlugins = await loadDevPlugins(mode);
 
   return {
-    base: '/',
+    base: './',
     server: {
       host: "::",
       port: 8080,
@@ -29,11 +29,17 @@ export default defineConfig(async ({ mode }) => {
       outDir: 'dist',
       emptyOutDir: true,
       sourcemap: true,
+      assetsDir: 'assets',
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
         },
         external: mode === 'production' ? ['lovable-tagger'] : [],
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+          },
+        },
       },
     },
     plugins: [
