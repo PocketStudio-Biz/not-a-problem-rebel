@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react'
 import { uploadImage } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -34,7 +35,6 @@ export default function ImageUploader() {
       />
       <label htmlFor="image-upload">
         <Button 
-          as="span"
           disabled={uploading}
           className="cursor-pointer"
         >
@@ -43,4 +43,4 @@ export default function ImageUploader() {
       </label>
     </div>
   )
-} 
+}

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ProfileImage from "./ProfileImage";
-import ImageUpload from "./ImageUpload";
+import { ImageUpload } from "./ImageUpload";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProfileImageUploadProps {

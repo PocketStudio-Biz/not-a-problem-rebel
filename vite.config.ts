@@ -1,9 +1,10 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { componentTagger } from "lovable-tagger";
 
-// https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
@@ -20,19 +21,8 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    {
-      name: 'spa-fallback',
-      configureServer(server) {
-        return () => {
-          server.middlewares.use((req, res, next) => {
-            if (req.url?.includes('.')) return next();
-            req.url = '/';
-            next();
-          });
-        };
-      }
-    }
-  ],
+    mode === 'development' && componentTagger(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -44,4 +34,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom'],
   },
-});
+}));
