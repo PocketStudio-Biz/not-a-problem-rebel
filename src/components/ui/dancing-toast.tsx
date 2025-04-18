@@ -39,6 +39,37 @@ const toastVariants = cva(
   }
 )
 
+const DancingToast = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Root>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
+    VariantProps<typeof toastVariants>
+>(({ className, variant, children, ...props }, ref) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, scale: 0.5 }}
+      animate={{
+        opacity: 1,
+        y: [50, 0],
+        rotate: [-5, 5, -5],
+        scale: [0.5, 1.1, 1],
+        transition: {
+          duration: 0.6,
+          ease: "easeInOut",
+          repeat: 0,
+          repeatType: "mirror"
+        }
+      }}
+      exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+      className={cn(toastVariants({ variant }), className)}
+      {...props}
+      ref={ref}
+    >
+      {children}
+    </motion.div>
+  )
+})
+DancingToast.displayName = "DancingToast"
+
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
@@ -140,4 +171,5 @@ export {
   ToastDescription,
   ToastClose,
   ToastAction,
+  DancingToast
 }
