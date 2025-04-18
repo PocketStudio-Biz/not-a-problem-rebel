@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface HeaderProps {
@@ -18,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ scrollToForm }) => {
         </p>
         <button 
           onClick={scrollToForm}
-          className="mt-8 bg-gradient-to-r from-yellow-200 to-pink-300 text-gray-900 font-bold py-3 px-8 rounded-full hover:opacity-90 transition-opacity"
+          className="mt-8 gradient-button"
           aria-label="Go to challenge signup form"
         >
           Join the Challenge →

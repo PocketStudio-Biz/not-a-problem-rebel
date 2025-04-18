@@ -1,4 +1,3 @@
-
 import React, { useRef, useCallback, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import confetti from 'canvas-confetti';
@@ -131,7 +130,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
         <div className="text-center">
           <button 
             onClick={scrollToForm}
-            className="bg-gradient-to-r from-yellow-200 to-pink-300 text-gray-900 font-bold py-3 px-8 rounded-full hover:opacity-90 transition-opacity"
+            className="gradient-button"
             aria-label="Go to challenge signup form"
           >
             Join the Challenge →
