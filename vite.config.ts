@@ -20,6 +20,7 @@ export default defineConfig(async ({ mode }) => {
   const devPlugins = await loadDevPlugins(mode);
 
   return {
+    base: '/',
     server: {
       host: "::",
       port: 8080,
