@@ -6,8 +6,9 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 255 245 245;
+    --foreground: 0 0 0;
+    --border: 229 231 235;
   }
   
   html {
@@ -20,6 +21,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#FFF5F5] text-foreground font-nunito;
+  }
+}
+
+@layer components {
+  .gradient-button {
+    @apply bg-gradient-to-r from-yellow-200 to-pink-300 text-gray-900 font-bold py-3 px-8 rounded-full hover:opacity-90 transition-opacity;
   }
 }
