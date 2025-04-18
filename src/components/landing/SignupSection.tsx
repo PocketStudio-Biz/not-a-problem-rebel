@@ -1,14 +1,28 @@
-
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import MailerLiteForm from '@/components/MailerLiteForm';
 import confetti from 'canvas-confetti';
+import { getImageUrl } from '@/lib/supabase';
 
 interface SignupSectionProps {
   formRef: React.RefObject<HTMLDivElement>;
 }
 
 const SignupSection: React.FC<SignupSectionProps> = ({ formRef }) => {
+  const [imageUrl, setImageUrl] = useState<string>('/not-a-problem-sweatshirt.png');
   const lastConfettiTime = useRef(0);
+
+  useEffect(() => {
+    // Try to get the image from Supabase, fallback to local if fails
+    const loadSupabaseImage = async () => {
+      try {
+        const url = await getImageUrl('uploads/not-a-problem-sweatshirt.png');
+        if (url) setImageUrl(url);
+      } catch (error) {
+        console.warn('Falling back to local image:', error);
+      }
+    };
+    loadSupabaseImage();
+  }, []);
 
   const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const now = Date.now();
@@ -44,7 +58,7 @@ const SignupSection: React.FC<SignupSectionProps> = ({ formRef }) => {
         >
           <div className="relative w-full h-full rounded-full overflow-hidden bg-white">
             <img 
-              src="https://qsevudeuwedgofdwemsc.supabase.co/storage/v1/object/public/images/not-a-problem.png" 
+              src={imageUrl}
               alt="I'm Not a Problem to Solve sweatshirt" 
               className="w-full h-full object-cover"
             />
