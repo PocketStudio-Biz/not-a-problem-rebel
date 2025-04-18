@@ -9,16 +9,33 @@ interface SignupSectionProps {
 
 const SignupSection: React.FC<SignupSectionProps> = ({ formRef }) => {
   const [imageUrl, setImageUrl] = useState<string>('/not-a-problem-sweatshirt.png');
+  const [imageError, setImageError] = useState<boolean>(false);
   const lastConfettiTime = useRef(0);
 
   useEffect(() => {
     // Try to get the image from Supabase, fallback to local if fails
     const loadSupabaseImage = async () => {
       try {
+        console.log('Attempting to load Supabase image...');
         const url = await getImageUrl('uploads/not-a-problem-sweatshirt.png');
-        if (url) setImageUrl(url);
+        console.log('Supabase image URL:', url);
+        if (url) {
+          // Test if the image loads successfully
+          const img = new Image();
+          img.onload = () => {
+            console.log('Supabase image loaded successfully');
+            setImageUrl(url);
+            setImageError(false);
+          };
+          img.onerror = (error) => {
+            console.warn('Supabase image failed to load:', error);
+            setImageError(true);
+          };
+          img.src = url;
+        }
       } catch (error) {
-        console.warn('Falling back to local image:', error);
+        console.warn('Error loading Supabase image:', error);
+        setImageError(true);
       }
     };
     loadSupabaseImage();
@@ -57,11 +74,19 @@ const SignupSection: React.FC<SignupSectionProps> = ({ formRef }) => {
           onMouseEnter={handleMouseEnter}
         >
           <div className="relative w-full h-full rounded-full overflow-hidden bg-white">
-            <img 
-              src={imageUrl}
-              alt="I'm Not a Problem to Solve sweatshirt" 
-              className="w-full h-full object-cover"
-            />
+            {imageError ? (
+              <img 
+                src="/not-a-problem-sweatshirt.png"
+                alt="I'm Not a Problem to Solve sweatshirt" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img 
+                src={imageUrl}
+                alt="I'm Not a Problem to Solve sweatshirt" 
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>

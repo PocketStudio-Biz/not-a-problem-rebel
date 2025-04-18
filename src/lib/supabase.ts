@@ -1,16 +1,47 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Ensure environment variables are properly formatted
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim() || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() || '';
+
+// Log environment variable status (without exposing values)
+console.log('Supabase Environment Status:', {
+  url: supabaseUrl ? '✓ present' : '✗ missing',
+  key: supabaseAnonKey ? '✓ present' : '✗ missing',
+  urlValid: supabaseUrl.startsWith('https://'),
+  keyValid: supabaseAnonKey.startsWith('eyJ')
+});
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase environment variables are missing:', {
-    url: supabaseUrl ? 'set' : 'missing',
-    key: supabaseAnonKey ? 'set' : 'missing'
-  })
+  throw new Error(
+    'Supabase configuration is incomplete. ' +
+    'Missing: ' + 
+    (!supabaseUrl ? 'VITE_SUPABASE_URL ' : '') +
+    (!supabaseAnonKey ? 'VITE_SUPABASE_ANON_KEY' : '')
+  );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+if (!supabaseUrl.startsWith('https://')) {
+  throw new Error('Invalid Supabase URL format. Must start with https://');
+}
+
+if (!supabaseAnonKey.startsWith('eyJ')) {
+  throw new Error('Invalid Supabase anonymous key format');
+}
+
+// Create the Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+});
+
+// Test the connection
+supabase.from('_test_connection').select('*').limit(1)
+  .then(() => console.log('✓ Supabase connection successful'))
+  .catch(error => console.error('✗ Supabase connection failed:', error.message));
 
 export async function uploadImage(file: File, bucket: string = 'images') {
   try {

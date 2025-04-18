@@ -175,6 +175,11 @@ const MailerLiteForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Check if Supabase is initialized
+      if (!supabase.functions) {
+        throw new Error('Supabase client is not properly initialized');
+      }
+
       console.log("Calling Supabase Edge Function...");
       const { data, error } = await supabase.functions.invoke('mailerlite', {
         body: { email, name },
@@ -182,13 +187,14 @@ const MailerLiteForm = () => {
       console.log("Edge Function response:", { data, error });
 
       if (error) {
-        throw new Error(error.message);
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to submit form');
       }
 
       // Check if we got a response with a message
       if (data?.message) {
-        // If it wasn't successful, show the error message
         if (!data.success) {
+          console.warn('Form submission failed:', data.message);
           toast({
             title: "A gentle heads up",
             description: data.message,
@@ -198,33 +204,18 @@ const MailerLiteForm = () => {
           return;
         }
         
-        // Show the dancing success toast and celebrate!
+        // Success case
+        console.log('Form submission successful:', data);
         setShowSuccessToast(true);
         celebrate();
-        
-        // Clear form after a slight delay
-        setTimeout(() => {
-          setName("");
-          setEmail("");
-        }, 500);
-
-        // Keep the toast visible for longer
-        setTimeout(() => {
-          setShowSuccessToast(false);
-        }, 6000); // Show toast for 6 seconds
-
-        return;
+        setName("");
+        setEmail("");
       }
-
-      throw new Error("Something unexpected happened. Please try again.");
-      
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error('Form submission error:', error);
       toast({
-        title: "A gentle heads up",
-        description: error instanceof Error 
-          ? error.message 
-          : "Something's not quite flowing right. Want to try that again?",
+        title: "Something unexpected happened",
+        description: "We're having trouble connecting to our services. Please try again in a moment.",
         variant: "destructive",
         duration: 5000,
       });
