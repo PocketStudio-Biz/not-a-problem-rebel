@@ -1,35 +1,32 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Ensure environment variables are properly formatted
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim() || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim() || '';
+// Default to empty string if undefined, then trim
+const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
+const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
 
-// Log environment variable status (without exposing values)
-console.log('Supabase Environment Status:', {
-  url: supabaseUrl ? '✓ present' : '✗ missing',
-  key: supabaseAnonKey ? '✓ present' : '✗ missing',
-  urlValid: supabaseUrl.startsWith('https://'),
-  keyValid: supabaseAnonKey.startsWith('eyJ')
+// Debug environment variables (safe to log)
+console.debug('Supabase Environment Check:', {
+  url: supabaseUrl ? '✓' : '✗',
+  key: supabaseAnonKey ? '✓' : '✗',
+  env: import.meta.env.MODE,
+  meta: {
+    urlValid: supabaseUrl.startsWith('https://'),
+    keyValid: supabaseAnonKey.startsWith('eyJ')
+  }
 });
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Supabase configuration is incomplete. ' +
-    'Missing: ' + 
-    (!supabaseUrl ? 'VITE_SUPABASE_URL ' : '') +
-    (!supabaseAnonKey ? 'VITE_SUPABASE_ANON_KEY' : '')
-  );
+// Validate configuration
+const missingVars = [];
+if (!supabaseUrl) missingVars.push('VITE_SUPABASE_URL');
+if (!supabaseAnonKey) missingVars.push('VITE_SUPABASE_ANON_KEY');
+
+if (missingVars.length > 0) {
+  const error = new Error(`Supabase configuration incomplete. Missing: ${missingVars.join(', ')}`);
+  console.error(error);
+  throw error;
 }
 
-if (!supabaseUrl.startsWith('https://')) {
-  throw new Error('Invalid Supabase URL format. Must start with https://');
-}
-
-if (!supabaseAnonKey.startsWith('eyJ')) {
-  throw new Error('Invalid Supabase anonymous key format');
-}
-
-// Create the Supabase client
+// Create client with validated config
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
@@ -38,83 +35,83 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
-// Test the connection
-supabase.from('_test_connection').select('*').limit(1)
-  .then(() => console.log('✓ Supabase connection successful'))
-  .catch(error => console.error('✗ Supabase connection failed:', error.message));
+// Test connection and log result
+const testConnection = async () => {
+  try {
+    const { error } = await supabase.from('_test_connection').select('count').single();
+    if (error) throw error;
+    console.log('✓ Supabase connection successful');
+  } catch (error) {
+    console.error('✗ Supabase connection error:', error.message);
+  }
+};
 
+// Run connection test
+testConnection();
+
+// Export utility functions
 export async function uploadImage(file: File, bucket: string = 'images') {
   try {
-    // Validate file type
     if (!file.type.startsWith('image/')) {
-      throw new Error('File must be an image')
+      throw new Error('File must be an image');
     }
 
-    // Generate a unique filename
-    const fileExt = file.name.split('.').pop()
-    const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
-    const fileName = `${uniqueId}.${fileExt}`
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+    const path = `uploads/${fileName}`;
     
-    console.log('Uploading image:', { bucket, path: `uploads/${fileName}` })
+    console.log('Uploading image:', { bucket, path });
     
-    // Upload file
     const { data, error } = await supabase.storage
       .from(bucket)
-      .upload(`uploads/${fileName}`, file, {
+      .upload(path, file, {
         upsert: true,
         contentType: file.type,
         cacheControl: '3600'
-      })
+      });
       
-    if (error) {
-      console.error('Error uploading to Supabase:', error)
-      throw error
-    }
+    if (error) throw error;
     
-    // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from(bucket)
-      .getPublicUrl(`uploads/${fileName}`)
+      .getPublicUrl(path);
       
-    console.log('Upload successful:', { publicUrl })
-    return publicUrl
+    console.log('Upload successful:', { publicUrl });
+    return publicUrl;
   } catch (error) {
-    console.error('Error uploading image:', error)
-    throw error
+    console.error('Error uploading image:', error);
+    throw error;
   }
 }
 
 export async function getImageUrl(path: string, bucket: string = 'images') {
   try {
-    console.log('Getting image URL:', { bucket, path })
+    console.log('Getting image URL:', { bucket, path });
     const { data: { publicUrl } } = supabase.storage
       .from(bucket)
-      .getPublicUrl(path)
+      .getPublicUrl(path);
     
-    console.log('Got public URL:', { publicUrl })
-    return publicUrl
+    console.log('Got public URL:', { publicUrl });
+    return publicUrl;
   } catch (error) {
-    console.error('Error getting image URL:', error)
-    throw error
+    console.error('Error getting image URL:', error);
+    throw error;
   }
 }
 
 export async function deleteImage(path: string, bucket: string = 'images') {
   try {
-    console.log('Deleting image:', { bucket, path })
+    console.log('Deleting image:', { bucket, path });
     const { data, error } = await supabase.storage
       .from(bucket)
-      .remove([path])
+      .remove([path]);
       
-    if (error) {
-      console.error('Error deleting from Supabase:', error)
-      throw error
-    }
+    if (error) throw error;
     
-    console.log('Delete successful:', { data })
-    return data
+    console.log('Delete successful:', { data });
+    return data;
   } catch (error) {
-    console.error('Error deleting image:', error)
-    throw error
+    console.error('Error deleting image:', error);
+    throw error;
   }
 } 
