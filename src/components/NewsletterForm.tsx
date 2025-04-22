@@ -32,20 +32,28 @@ const NewsletterForm = () => {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({ email, name }),
+          mode: "cors",
+          credentials: "omit",
         }
       );
 
       console.log("Response status:", response.status);
 
+      let data;
+      try {
+        data = await response.json();
+        console.log("Response data:", data);
+      } catch (jsonError) {
+        console.error("Failed to parse response:", jsonError);
+        throw new Error("Failed to parse server response");
+      }
+
       if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        console.error("API Error:", data);
         throw new Error(
-          data.error || `Failed to subscribe (${response.status})`
+          data?.error || `Failed to subscribe (${response.status})`
         );
       }
 
-      const data = await response.json();
       console.log("Success response:", data);
       alert("Welcome aboard! Check your email for updates.");
       e.currentTarget.reset();
