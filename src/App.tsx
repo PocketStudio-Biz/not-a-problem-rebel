@@ -11,6 +11,7 @@ const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LandingPageDemo = lazy(() => import("./pages/LandingPageDemo"));
 const Upload = lazy(() => import("./pages/Upload"));
+const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/landing-demo" element={<LandingPageDemo />} />
               <Route path="/upload" element={<Upload />} />
+              <Route path="/images" element={<ImageShowcase />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

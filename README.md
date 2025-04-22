@@ -1,73 +1,149 @@
-# Welcome to your Lovable project
+# Not A Problem - React + Supabase Application
 
-## Project info
+A modern web application built with React, TypeScript, and Supabase, offering a clean UI with shadcn components.
 
-**URL**: https://lovable.dev/projects/a56d7c30-5a75-44bf-8f99-570fcfa871a1
+## Features
 
-## How can I edit this code?
+- **Authentication** - User login and registration powered by Supabase Auth
+- **Real-time Data** - Leveraging Supabase's real-time capabilities
+- **Modern UI** - Clean design using shadcn/ui components and Tailwind CSS
+- **TypeScript** - Type-safe development experience
+- **Vite** - Fast development and optimized production builds
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a56d7c30-5a75-44bf-8f99-570fcfa871a1) and start prompting.
+- Node.js 18 or higher
+- npm or yarn
+- A Supabase account and project
 
-Changes made via Lovable will be committed automatically to this repo.
+### Installation
 
-**Use your preferred IDE**
+1. Clone the repository
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+   ```sh
+   git clone https://github.com/yourusername/not-a-problem-rebel.git
+   cd not-a-problem-rebel
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2. Install dependencies
 
-Follow these steps:
+   ```sh
+   npm install
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Configure environment variables
+   Create a `.env` file in the root directory with the following variables:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+   ```
+   VITE_SUPABASE_URL=your-supabase-url
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_APP_ENV=development
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. Start the development server
+   ```sh
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## Project Structure
+
+```
+not-a-problem-rebel/
+├── public/               # Static assets
+│   ├── assets/           # Images, fonts, etc.
+│   ├── components/       # UI components
+│   ├── hooks/            # Custom React hooks
+│   ├── integrations/     # Third-party service integrations
+│   │   └── supabase/     # Supabase client and types
+│   ├── lib/              # Utility functions
+│   ├── routes/           # Application routes
+│   ├── styles/           # Global styles
+│   ├── App.tsx           # Main application component
+│   └── main.tsx          # Application entry point
+├── .env                  # Environment variables
+├── index.html            # HTML entry point
+├── netlify.toml          # Netlify configuration
+└── vite.config.ts        # Vite configuration
 ```
 
-**Edit a file directly in GitHub**
+## Deployment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Deploy to Netlify
 
-**Use GitHub Codespaces**
+This project is configured to work with Netlify. Follow these steps to deploy:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Set up environment variables**:
+   Make sure your `.env` file has the correct Supabase credentials:
 
-## What technologies are used for this project?
+   ```
+   VITE_SUPABASE_URL=your-supabase-url
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_APP_ENV=production
+   ```
 
-This project is built with:
+2. **Deploy using PowerShell script** (Windows):
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+   ```
+   .\deploy.ps1
+   ```
 
-## How can I deploy this project?
+   This will build your project and deploy it to Netlify
 
-Simply open [Lovable](https://lovable.dev/projects/a56d7c30-5a75-44bf-8f99-570fcfa871a1) and click on Share -> Publish.
+3. **Manual deployment**:
 
-## Can I connect a custom domain to my Lovable project?
+   ```sh
+   npm run build
+   netlify deploy --prod
+   ```
 
-Yes, you can!
+4. **Connect to Netlify via GitHub**:
+   - Go to [Netlify](https://app.netlify.com/)
+   - Create a new site from Git
+   - Connect to your GitHub repository
+   - Configure with the following settings:
+     - Build command: `npm run build`
+     - Publish directory: `dist`
+   - Add environment variables in the Netlify dashboard
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Environment Variables
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+| Variable                 | Description                          | Required |
+| ------------------------ | ------------------------------------ | -------- |
+| VITE_SUPABASE_URL        | Your Supabase project URL            | Yes      |
+| VITE_SUPABASE_ANON_KEY   | Your Supabase anonymous key          | Yes      |
+| VITE_APP_ENV             | Environment (development/production) | Yes      |
+| VITE_MAILERLITE_API_KEY  | MailerLite API key                   | No       |
+| VITE_MAILERLITE_GROUP_ID | MailerLite group ID                  | No       |
+
+## Development
+
+### Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run build:dev` - Build for development
+- `npm run preview` - Preview production build
+- `npm run lint` - Lint code
+- `npm run format` - Format code
+- `npm run deploy` - Build and deploy to Netlify
+
+### Using Lovable
+
+This project can also be managed through [Lovable](https://lovable.dev/projects/a56d7c30-5a75-44bf-8f99-570fcfa871a1):
+
+- Visit the Lovable Project and start prompting
+- Changes made via Lovable will be committed automatically to this repo
+
+## Contributing
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/amazing-feature`)
+3. Commit your Changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the Branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.

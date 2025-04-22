@@ -1,0 +1,10 @@
+---
+description: SQL Query Standards
+globs: ["**/*.sql"]
+---
+
+# SQL Guidelines
+- Write formatted, readable SQL.
+- Use parameters to avoid injection.
+- Index appropriately for performance.
+- Avoid SELECT *; be explicit in production.

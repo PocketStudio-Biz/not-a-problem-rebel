@@ -17,14 +17,10 @@ const NewsletterForm = () => {
       const name = formData.get("name") as string;
 
       // Debug info
-      console.log("Form data:", { email, name });
-      console.log(
-        "Anon key present:",
-        !!import.meta.env.VITE_SUPABASE_ANON_KEY
-      );
+      console.log("Submitting:", { email, name });
 
       const response = await fetch(
-        "https://qsevudeuwedgofdwemsc.supabase.co/functions/v1/mailerlite",
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/mailerlite`,
         {
           method: "POST",
           headers: {
@@ -33,32 +29,23 @@ const NewsletterForm = () => {
           },
           body: JSON.stringify({ email, name }),
           mode: "cors",
-          credentials: "omit",
         }
       );
 
-      console.log("Response status:", response.status);
-
-      let data;
-      try {
-        data = await response.json();
-        console.log("Response data:", data);
-      } catch (jsonError) {
-        console.error("Failed to parse response:", jsonError);
-        throw new Error("Failed to parse server response");
-      }
-
       if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        console.error("API Error:", data);
         throw new Error(
           data?.error || `Failed to subscribe (${response.status})`
         );
       }
 
-      console.log("Success response:", data);
+      const data = await response.json();
+      console.log("Success:", data);
       alert("Welcome aboard! Check your email for updates.");
       e.currentTarget.reset();
     } catch (error: any) {
-      console.error("Subscription error:", error);
+      console.error("Error:", error);
       setError(error.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);

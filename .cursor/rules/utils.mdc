@@ -1,0 +1,10 @@
+---
+description: Utility Function Guidelines
+globs: ["utils/**/*.ts"]
+---
+
+# Utility Guidelines
+- Keep functions pure and testable.
+- Prefer named exports.
+- Add comments for non-obvious logic.
+- Group utilities by domain (e.g., dateUtils).

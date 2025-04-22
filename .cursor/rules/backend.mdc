@@ -1,0 +1,10 @@
+---
+description: Backend API & Logic Standards
+globs: ["api/**/*.ts"]
+---
+
+# Backend Guidelines
+- Validate all API inputs (e.g., using zod).
+- Use async/await consistently.
+- Follow RESTful conventions.
+- Log errors clearly; avoid noisy debug logs in production.

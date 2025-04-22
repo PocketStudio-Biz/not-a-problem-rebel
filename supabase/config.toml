@@ -1,1 +1,8 @@
 project_id = "qsevudeuwedgofdwemsc"
+
+[api]
+enabled = true
+schemas = ["storage", "vault", "graphql_public", "graphql", "realtime", "public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+port = 54321

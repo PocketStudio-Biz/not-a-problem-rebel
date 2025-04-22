@@ -1,9 +1,8 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { uploadImage } from '@/lib/upload-image';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
+import { supabase } from '@/lib/supabase';
 
 interface ImageUploadProps {
   onUploadComplete?: (url: string) => void;
@@ -41,6 +40,18 @@ export function ImageUpload({ onUploadComplete, className = '' }: ImageUploadPro
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Check authentication
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to upload images",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Client-side validation for immediate feedback
     // Check file type
     if (!file.type.startsWith('image/')) {
       toast({
@@ -68,11 +79,29 @@ export function ImageUpload({ onUploadComplete, className = '' }: ImageUploadPro
     };
     reader.readAsDataURL(file);
 
-    // Upload to Supabase
+    // Upload using secure server-side endpoint
     try {
       setIsUploading(true);
-      const { url } = await uploadImage(file);
-      onUploadComplete?.(url);
+
+      // Create form data
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Call the secure server-side endpoint with proper authentication
+      const { data, error } = await supabase.functions.invoke('file-upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session.session.access_token}`,
+        },
+      });
+
+      if (error || !data?.success) {
+        throw new Error(error?.message || data?.message || 'Upload failed');
+      }
+
+      // Handle successful upload
+      onUploadComplete?.(data.url);
       
       // Trigger confetti on successful upload
       confetti({
@@ -87,7 +116,7 @@ export function ImageUpload({ onUploadComplete, className = '' }: ImageUploadPro
         description: "Your image has been uploaded successfully",
       });
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('Upload error occurred');
       toast({
         title: "A gentle heads up",
         description: "There was an issue uploading your image. Please try again.",

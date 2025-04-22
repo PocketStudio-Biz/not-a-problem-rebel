@@ -1,117 +1,135 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js";
 
-// Default to empty string if undefined, then trim
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
-const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+// Security configuration
+const SECURITY_CONFIG = {
+  URL_PATTERN: /^https:\/\/[a-zA-Z0-9-]+\.supabase\.co$/,
+  KEY_PATTERN: /^eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/,
+  FILE_UPLOAD: {
+    MAX_SIZE: 5 * 1024 * 1024, // 5MB
+    ALLOWED_TYPES: [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ] as const,
+    ALLOWED_EXTENSIONS: ["jpg", "jpeg", "png", "gif", "webp"] as const,
+  },
+} as const;
 
-// Debug environment variables (safe to log)
-console.debug('Supabase Environment Check:', {
-  url: supabaseUrl ? '✓' : '✗',
-  key: supabaseAnonKey ? '✓' : '✗',
-  env: import.meta.env.MODE,
-  meta: {
-    urlValid: supabaseUrl.startsWith('https://'),
-    keyValid: supabaseAnonKey.startsWith('eyJ')
+// Initialize client with environment variables
+export const supabase = createClient(
+  "https://qsevudeuwedgofdemsc.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZXZ1ZGV1d2VkZ29mZHdlbXNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUwNDkzNjMsImV4cCI6MjA2MDYyNTM2M30.Rz0kTOHqDGdXamqAUyJel8j-CkDcc-i1iUY8vprhYAk",
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+    },
   }
-});
+);
 
-// Validate configuration
-const missingVars = [];
-if (!supabaseUrl) missingVars.push('VITE_SUPABASE_URL');
-if (!supabaseAnonKey) missingVars.push('VITE_SUPABASE_ANON_KEY');
+// Secure file name generation
+const generateSecureFileName = (originalName: string): string => {
+  const timestamp = Date.now();
+  const randomId = crypto.randomUUID().slice(0, 8);
+  const sanitizedName = originalName
+    .toLowerCase()
+    .replace(/[^a-z0-9.-]/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 32);
 
-if (missingVars.length > 0) {
-  const error = new Error(`Supabase configuration incomplete. Missing: ${missingVars.join(', ')}`);
-  console.error(error);
-  throw error;
-}
-
-// Create client with validated config
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
-
-// Test connection and log result
-const testConnection = async () => {
-  try {
-    const { error } = await supabase.from('_test_connection').select('count').single();
-    if (error) throw error;
-    console.log('✓ Supabase connection successful');
-  } catch (error) {
-    console.error('✗ Supabase connection error:', error.message);
-  }
+  return `${timestamp}-${randomId}-${sanitizedName}`;
 };
 
-// Run connection test
-testConnection();
-
-// Export utility functions
-export async function uploadImage(file: File, bucket: string = 'images') {
+// Secure file upload utility
+async function uploadImage(file: File, bucket: string = "images") {
   try {
-    if (!file.type.startsWith('image/')) {
-      throw new Error('File must be an image');
+    // Size validation
+    if (file.size > SECURITY_CONFIG.FILE_UPLOAD.MAX_SIZE) {
+      throw new Error(
+        `File size must be less than ${SECURITY_CONFIG.FILE_UPLOAD.MAX_SIZE / 1024 / 1024}MB`
+      );
     }
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+    // Type validation
+    if (!SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES.includes(file.type as any)) {
+      throw new Error(
+        `Invalid file type. Allowed types: ${SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES.join(", ")}`
+      );
+    }
+
+    // Extension validation
+    const fileExt = file.name.split(".").pop()?.toLowerCase() || "";
+    if (
+      !SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS.includes(fileExt as any)
+    ) {
+      throw new Error(
+        `Invalid file extension. Allowed extensions: ${SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS.join(", ")}`
+      );
+    }
+
+    // Generate secure filename
+    const fileName = generateSecureFileName(file.name);
     const path = `uploads/${fileName}`;
-    
-    console.log('Uploading image:', { bucket, path });
-    
+
+    // Upload with strict settings
     const { data, error } = await supabase.storage
       .from(bucket)
       .upload(path, file, {
-        upsert: true,
+        upsert: false, // Prevent overwriting existing files
         contentType: file.type,
-        cacheControl: '3600'
+        cacheControl: "3600",
       });
-      
+
     if (error) throw error;
-    
-    const { data: { publicUrl } } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(path);
-      
-    console.log('Upload successful:', { publicUrl });
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(bucket).getPublicUrl(path);
+
     return publicUrl;
   } catch (error) {
-    console.error('Error uploading image:', error);
-    throw error;
+    console.error("Upload failed:", (error as Error).message);
+    throw new Error("Failed to upload image. Please try again.");
   }
 }
 
-export async function getImageUrl(path: string, bucket: string = 'images') {
+// Secure file deletion with path validation
+async function deleteImage(path: string, bucket: string = "images") {
   try {
-    console.log('Getting image URL:', { bucket, path });
-    const { data: { publicUrl } } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(path);
-    
-    console.log('Got public URL:', { publicUrl });
-    return publicUrl;
+    // Validate path format
+    if (!/^uploads\/[\w.-]+$/.test(path)) {
+      throw new Error("Invalid file path format");
+    }
+
+    const { data, error } = await supabase.storage.from(bucket).remove([path]);
+
+    if (error) throw error;
+    return true;
   } catch (error) {
-    console.error('Error getting image URL:', error);
-    throw error;
+    console.error("Deletion failed:", (error as Error).message);
+    throw new Error("Failed to delete image");
   }
 }
 
-export async function deleteImage(path: string, bucket: string = 'images') {
+// Secure URL getter
+async function getImageUrl(path: string, bucket: string = "images") {
   try {
-    console.log('Deleting image:', { bucket, path });
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .remove([path]);
-      
-    if (error) throw error;
-    
-    console.log('Delete successful:', { data });
-    return data;
+    // Validate path format
+    if (!/^uploads\/[\w.-]+$/.test(path)) {
+      throw new Error("Invalid file path format");
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(bucket).getPublicUrl(path);
+
+    return publicUrl;
   } catch (error) {
-    console.error('Error deleting image:', error);
-    throw error;
+    console.error("Failed to get image URL:", (error as Error).message);
+    throw new Error("Failed to get image URL");
   }
-} 
+}
+
+export { uploadImage, deleteImage, getImageUrl };

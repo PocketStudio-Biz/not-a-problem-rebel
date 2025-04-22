@@ -1,0 +1,10 @@
+---
+description: General Guidelines
+globs: ["*"]
+---
+
+# General Coding Guidelines
+- Use TypeScript for all development.
+- Prioritize readability and maintainability.
+- Use clear, descriptive variable and function names.
+- Add meaningful comments for complex logic.
